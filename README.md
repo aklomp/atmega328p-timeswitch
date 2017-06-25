@@ -17,6 +17,8 @@ even more power. The chip can now run completely standalone without external
 circuitry. Further power can be saved by running the chip from a low voltage
 source, which can be as low as 2V.
 
+Measured power usage is 28µA @ 5V, and 24µA @ 3.3V.
+
 The goal was to make a simple "alarm clock" that can turn on a power-hungry
 ESP8266 board every 15 minutes so that it can take temperature measurements and
 send them over WiFi, then turning it off again. The ESP8266 is not exactly a

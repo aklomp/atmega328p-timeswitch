@@ -37,14 +37,14 @@ $(TARGET).elf: $(OBJS)
 # with jumper wires. We lower the ISP bitrate to avoid timeouts. Unfortunately
 # we can't use the native Arduino bootloader because it can't flash the fuses.
 flash: $(TARGET).hex
-	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -P /dev/ttyACM0 -b 115200 -e -U flash:w:$(TARGET).hex
+	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -e -U flash:w:$(TARGET).hex
 
 # The lfuse is set to 0xC3 to use the internal 128 KHz oscillator as clock.
 # The efuse is set to 0xFF to disable brown-out detection.
 flash-fuses:
-	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -P /dev/ttyACM0 -b 115200 -u -U lfuse:w:0xC3:m
+	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -u -U lfuse:w:0xC3:m
 	sleep 1
-	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -P /dev/ttyACM0 -b 115200 -u -U efuse:w:0xFF:m
+	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -u -U efuse:w:0xFF:m
 
 clean:
 	$(RM) $(OBJS) $(TARGET).{hex,elf,lst,map,d}
