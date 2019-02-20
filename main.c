@@ -96,37 +96,44 @@ init (void)
 	sei();
 }
 
+static bool
+step_active (void)
+{
+	static uint8_t count = 0;
+
+	// Remain active until the period is over:
+	if (++count != COUNT_ACTIVE)
+		return true;
+
+	// Reset port B0 and counter:
+	PORTB = 0;
+	count = 0;
+	return false;
+}
+
+static bool
+step_sleep (void)
+{
+	static uint8_t count = 0;
+
+	// Remain dormant until the period is over:
+	if (++count != COUNT_SLEEP)
+		return false;
+
+	// Set port B0, reset counter:
+	PORTB = 1;
+	count = 0;
+	return true;
+}
+
 static void
 loop (void)
 {
-	for (;;)
-	{
-		static bool active = false;
-		static uint8_t count = 0;
+	bool active = false;
 
+	for (;;) {
 		sleep();
-
-		if (active)
-		{
-			// Wait until the active period is over:
-			if (++count != COUNT_ACTIVE)
-				continue;
-
-			// Reset port B0 and counter:
-			PORTB  = 0;
-			count  = 0;
-			active = false;
-			continue;
-		}
-
-		// Wait until the inactive period is over:
-		if (++count != COUNT_SLEEP)
-			continue;
-
-		// Set port B0, reset counter:
-		PORTB  = 1;
-		count  = 0;
-		active = true;
+		active = active ? step_active() : step_sleep();
 	}
 }
 
