@@ -50,9 +50,8 @@ watchdog_set (void)
 	WDTCSR = _BV(WDE) | _BV(WDP3) | _BV(WDP0) | _BV(WDIE);
 }
 
-// Entry point.
-int
-main (void)
+static void
+init (void)
 {
 	// Set all ports to output:
 	DDRB = 1;
@@ -95,7 +94,11 @@ main (void)
 
 	// Enable interrupts:
 	sei();
+}
 
+static void
+loop (void)
+{
 	for (;;)
 	{
 		static bool active = false;
@@ -125,4 +128,12 @@ main (void)
 		count  = 0;
 		active = true;
 	}
+}
+
+// Entry point.
+int
+main (void)
+{
+	init();
+	loop();
 }
