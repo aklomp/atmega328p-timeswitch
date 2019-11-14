@@ -1,8 +1,7 @@
-CROSS	= /opt/cross/avr/bin/avr-
-CC	= $(CROSS)gcc
-LD	= $(CROSS)ld
-OBJCOPY	= $(CROSS)objcopy
-AVRDUDE	= avrdude
+CROSS	?= /opt/cross/avr/bin/avr-
+CC	 = $(CROSS)gcc
+OBJCOPY	 = $(CROSS)objcopy
+AVRDUDE	 = avrdude
 
 MCU	= atmega328p
 F_CPU	= 8000000
