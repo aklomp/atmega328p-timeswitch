@@ -1,6 +1,6 @@
 # Atmel Atmega328P as a super low power on/off timer switch
 
-[![Build Status](https://travis-ci.org/aklomp/atmega328p-timeswitch.svg?branch=master)](https://travis-ci.org/aklomp/atmega328p-timeswitch)
+[![Build](https://github.com/aklomp/atmega328p-timeswitch/actions/workflows/build.yml/badge.svg)](https://github.com/aklomp/atmega328p-timeswitch/actions/workflows/build.yml)
 
 This firmware programs the Atmega328P to deep-sleep for 872 seconds, turn on
 pin B0 for 24 seconds, then turn off the pin and go back to deep sleep. This
