@@ -2,9 +2,6 @@ name: Build
 
 on: [push]
 
-env:
-  CROSS: avr-
-
 jobs:
   Build:
     runs-on: ubuntu-latest

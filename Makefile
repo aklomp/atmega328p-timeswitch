@@ -1,4 +1,4 @@
-CROSS	?= /opt/cross/avr/bin/avr-
+CROSS	?= avr-
 CC	 = $(CROSS)gcc
 OBJCOPY	 = $(CROSS)objcopy
 AVRDUDE	 = avrdude
@@ -8,7 +8,7 @@ F_CPU	= 8000000
 
 TARGET	= main
 
-COMMON_FLAGS = -Os -std=c99 -DF_CPU=$(F_CPU)UL -mmcu=$(MCU)
+COMMON_FLAGS = -Os -std=c99 -g -DF_CPU=$(F_CPU)UL -mmcu=$(MCU)
 
 CFLAGS	 = $(COMMON_FLAGS)
 CFLAGS	+= -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
