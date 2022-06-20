@@ -31,13 +31,14 @@ sleep (void)
 	MCUCR = _BV(BODS);
 
 	// BODS becomes active after three cycles, for a period of three cycles.
-	// Issue sleep instruction within three-cycle window:
-	__asm volatile (
-		"nop\n\t"
-		"nop\n\t"
-		"nop\n\t"
-		"nop\n\t"
-		"sleep\n\t");
+	// Issue the sleep instruction within a three-cycle window.
+	__asm__ volatile (
+		"nop   \n\t"
+		"nop   \n\t"
+		"nop   \n\t"
+		"nop   \n\t"
+		"sleep \n\t"
+	);
 }
 
 static void
