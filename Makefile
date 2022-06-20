@@ -17,8 +17,9 @@ CFLAGS	+= -Wall -Wstrict-prototypes -Wa,-adhlns=$(<:.c=.lst)
 LDFLAGS	 = $(COMMON_FLAGS)
 LDFLAGS	+= -Wl,-Map=$(TARGET).map,--cref
 
-SRCS	= $(wildcard *.c)
+SRCS	= $(wildcard src/*.c)
 OBJS	= $(SRCS:.c=.o)
+LSTS	= $(SRCS:.c=.lst)
 
 .PHONY: clean flash
 
@@ -46,4 +47,4 @@ flash-fuses:
 	$(AVRDUDE) -F -c jtag2isp -B 100 -p $(MCU) -u -U efuse:w:0xFF:m
 
 clean:
-	$(RM) $(OBJS) $(TARGET).{hex,elf,lst,map,d}
+	$(RM) $(OBJS) $(LSTS) $(TARGET).{hex,elf,map,d}
