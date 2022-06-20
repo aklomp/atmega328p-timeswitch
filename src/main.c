@@ -130,12 +130,8 @@ step_sleep (void)
 static void
 loop (void)
 {
-	bool active = false;
-
-	for (;;) {
+	for (bool active = false; ; active = active ? step_active() : step_sleep())
 		sleep();
-		active = active ? step_active() : step_sleep();
-	}
 }
 
 // Entry point.
