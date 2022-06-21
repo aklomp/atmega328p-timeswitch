@@ -8,15 +8,14 @@
 
 ISR (WDT_vect)
 {
-	// Watchdog timer interrupt handler. Re-enable the interrupt:
+	// Watchdog timer interrupt handler. Re-enable the interrupt.
 	WDTCSR |= _BV(WDIE);
 }
 
 // Enter deep sleep mode.
-static void
-sleep (void)
+static void sleep (void)
 {
-	// Set the Sleep Mode register to Power Down mode:
+	// Set the Sleep Mode register to Power Down mode.
 	SMCR = _BV(SM1) | _BV(SE);
 
 	// The brown-out detector is probably not even enabled, because it
@@ -24,10 +23,10 @@ sleep (void)
 	// disable it anyway. It will only be disabled during sleep if a timed
 	// sequence is followed.
 
-	// Enable BODS and BODSE:
+	// Enable BODS and BODSE.
 	MCUCR = _BV(BODS) | _BV(BODSE);
 
-	// Within four cycles, set BODS to one and BODSE to zero:
+	// Within four cycles, set BODS to one and BODSE to zero.
 	MCUCR = _BV(BODS);
 
 	// BODS becomes active after three cycles, for a period of three cycles.
@@ -41,34 +40,31 @@ sleep (void)
 	);
 }
 
-static void
-watchdog_set (void)
+static void watchdog_set (void)
 {
-	// Start timed sequence:
+	// Start the timed sequence.
 	WDTCSR = _BV(WDE) | _BV(WDCE);
 
-	// Set prescaler to 8 seconds and enable interrupt:
+	// Set the prescaler to 8 seconds and enable the interrupt.
 	WDTCSR = _BV(WDE) | _BV(WDP3) | _BV(WDP0) | _BV(WDIE);
 }
 
-static void
-init (void)
+static void init (void)
 {
-	// Set all ports to output:
+	// Set all ports to output mode.
 	DDRB = 1;
 	DDRC = 1;
 	DDRD = 1;
 
-	// Set all outputs low:
+	// Set all outputs low.
 	PORTB = 0;
 	PORTC = 0;
 	PORTD = 0;
 
-	// Disable Analog Comparator:
-	ACSR |= _BV(ACD);
+	// Disable the Analog Comparator.
+	ACSR = _BV(ACD);
 
-	// Disable digital input buffers:
-	DIDR1 = _BV(AIN1D) | _BV(AIN0D);
+	// Disable the digital input buffers.
 	DIDR0 = _BV(ADC5D)
 	      | _BV(ADC4D)
 	      | _BV(ADC3D)
@@ -77,10 +73,14 @@ init (void)
 	      | _BV(ADC0D)
 	      ;
 
-	// Must disable ADC before shutting it down:
-	ADCSRA &= ~_BV(ADEN);
+	DIDR1 = _BV(AIN1D)
+	      | _BV(AIN0D)
+	      ;
 
-	// Reduce power by shutting down peripherals:
+	// Disable the ADC before shutting it down.
+	ADCSRA = 0;
+
+	// Reduce power by shutting down peripherals.
 	PRR = _BV(PRADC)
 	    | _BV(PRUSART0)
 	    | _BV(PRSPI)
@@ -90,53 +90,49 @@ init (void)
 	    | _BV(PRTWI)
 	    ;
 
-	// Set the Watchdog Timer to wake us every 8 seconds:
+	// Set the Watchdog Timer to wake the core every 8 seconds.
 	watchdog_set();
 
-	// Enable interrupts:
+	// Enable interrupts.
 	sei();
 }
 
-static bool
-step_active (void)
+static bool step_active (void)
 {
 	static uint8_t count = 0;
 
-	// Remain active until the period is over:
+	// Remain active until the period is over.
 	if (++count != COUNT_ACTIVE)
 		return true;
 
-	// Reset port B0 and counter:
+	// Reset port B0 and the counter.
 	PORTB = 0;
 	count = 0;
 	return false;
 }
 
-static bool
-step_sleep (void)
+static bool step_sleep (void)
 {
 	static uint8_t count = 0;
 
-	// Remain dormant until the period is over:
+	// Remain dormant until the period is over.
 	if (++count != COUNT_SLEEP)
 		return false;
 
-	// Set port B0, reset counter:
+	// Set port B0, reset the counter.
 	PORTB = 1;
 	count = 0;
 	return true;
 }
 
-static void
-loop (void)
+static void loop (void)
 {
 	for (bool active = false; ; active = active ? step_active() : step_sleep())
 		sleep();
 }
 
 // Entry point.
-int
-main (void)
+int main (void)
 {
 	init();
 	loop();
